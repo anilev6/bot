@@ -1,17 +1,15 @@
-# --------------------NO LIBS WOW-------------------------------------------------------
+# Define break points and available commands
+BREAK_POINTS = ("good bye", "close", "exit")
+AVAILABLE_COMMANDS = ("hello", "add", "change", "phone", "show_all", "help")
 
-break_points = ("good bye", "close", "exit")
-available_commands = ("hello", "add", "change", "phone", "show_all", "help")
-
-# --------------------DATA STORAGE------------------------------------------------------
-
-data = {}
+# Data storage
+DATA = {}
 
 
-# --------------------A DECORATOR-------------------------------------------------------
-
-
+# Decorator for handling input errors
 def input_error(func):
+    """Decorator that handles common input errors for command functions."""
+
     def inner(*args, **kwargs):
         try:
             return func(*args, **kwargs)
@@ -20,77 +18,82 @@ def input_error(func):
         except ValueError:
             print("No such phone number!")
         except IndexError:
-            print('A wrong request! To see avaliable list of commands type "help" ')
+            print('Invalid request! To see available list of commands type "help" ')
 
     return inner
 
 
-# --------------------HANDLERS-------------------------------------------------------
-
-
+# Command functions
 @input_error
-def hello(l):
+def hello(*_):
+    """Greet the user."""
     print("How can I help you?")
 
 
 @input_error
-def help(l):
+def help(*_):
+    """Show a list of available commands and their usage."""
     print("hello = greeting")
     print("add *name* *number* = adding a contact")
-    print("change *name* *number*= chaning an existing contact")
-    print("phone *name* = nuber")
+    print("change *name* *number*= changing an existing contact")
+    print("phone *name* = number")
     print("show_all = reveal the data")
     print("help = show all commands")
-    print(f"{break_points}= kill the bot")
+    print(f"{BREAK_POINTS} = exit the program")
 
 
 @input_error
-def add(l):
-    name, phone = l[1], l[2]
-    if name in data:
-        print("already exists!")
+def add(arguments):
+    """Add a new contact to the data.
+    arguments is a list made of input: input.split(' ')"""
+    name, phone = arguments[1], arguments[2]
+    if name in DATA:
+        print("Contact already exists!")
     else:
-        data[name] = phone
+        DATA[name] = phone
 
 
 @input_error
-def change(l):
-    if l[1] in data.keys():
-        data[l[1]] = l[2]
+def change(arguments):
+    """Change the phone number for an existing contact.
+    arguments is a list made of input: input.split(' ')"""
+    if arguments[1] in DATA:
+        DATA[arguments[1]] = arguments[2]
     else:
-        print("no such name in a book!")
+        print("No such contact!")
 
 
 @input_error
-def phone(l):
-    print(data[l[1]])
+def phone(arguments):
+    """Show the phone number for a contact.
+    arguments is a list made of input: input.split(' ')"""
+    print(DATA[arguments[1]])
 
 
 @input_error
-def show_all(l):
-    print(data)
+def show_all(*_):
+    """Show all contacts in the data.
+    arguments is a list made of input: input.split(' ')"""
+    print(DATA)
 
 
-# --------------------SET OF HANDLERS-----------------------------------------------------
-# available_commands=("hello","add","change","phone" ,"show_all","help")
-commands = (hello, add, change, phone, show_all, help)
+# Set of command functions
+COMMANDS = (hello, add, change, phone, show_all, help)
 
 
-# -----------------------------------MAIN--------------------------------------------------
-
-
+# Main loop
 def main():
+    """Main function that runs the program."""
     while True:
         user_input = input("> ").lower()
 
-        if user_input in break_points:
+        if user_input in BREAK_POINTS:
             break
 
         command = user_input.split(" ")[0]
-        if command in available_commands:
-            index = available_commands.index(command)
-            commands[index](user_input.split(" "))
-
+        if command in AVAILABLE_COMMANDS:
+            index = AVAILABLE_COMMANDS.index(command)
+            COMMANDS[index](user_input.split(" "))
         else:
             print("No such command! Please repeat")
 

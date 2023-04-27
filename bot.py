@@ -1,6 +1,5 @@
 # Define break points and available commands
 BREAK_POINTS = ("good bye", "close", "exit")
-AVAILABLE_COMMANDS = ("hello", "add", "change", "phone", "show_all", "help")
 
 # Data storage
 DATA = {}

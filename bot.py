@@ -17,7 +17,7 @@ def input_error(func):
             print("No such contact!")
         except ValueError:
             print("No such phone number!")
-        except IndexError:
+        except TypeError:
             print('Invalid request! To see available list of commands type "help" ')
 
     return inner
@@ -27,61 +27,72 @@ def input_error(func):
 @input_error
 def hello(*_):
     """Greet the user."""
-    print("How can I help you?")
+    return "How can I help you?"
 
 
 @input_error
 def help(*_):
     """Show a list of available commands and their usage."""
-    print("hello = greeting")
-    print("add *name* *number* = adding a contact")
-    print("change *name* *number*= changing an existing contact")
-    print("phone *name* = number")
-    print("show_all = reveal the data")
-    print("help = show all commands")
-    print(f"{BREAK_POINTS} = exit the program")
+
+    list_of_instructions = [
+        "hello = greeting",
+        "add *name* *number* = adding a contact",
+        "change *name* *number*= changing an existing contact",
+        "phone *name* = number",
+        "show_all = reveal the data",
+        "help = show all commands",
+        f"{BREAK_POINTS} = exit the program",
+    ]
+
+    return "\n".join(list_of_instructions)
 
 
 @input_error
-def add(arguments):
-    """Add a new contact to the data.
-    arguments is a list made of input: input.split(' ')"""
-    name, phone = arguments[1], arguments[2]
+def add(name, phone):
+    """Add a new contact to the data."""
     if name in DATA:
-        print("Contact already exists!")
+        return "Contact already exists!"
     else:
         DATA[name] = phone
+        return "successfully added"
 
 
 @input_error
-def change(arguments):
-    """Change the phone number for an existing contact.
-    arguments is a list made of input: input.split(' ')"""
-    if arguments[1] in DATA:
-        DATA[arguments[1]] = arguments[2]
+def change(name, number, *_):
+    """Change the phone number for an existing contact."""
+    if name in DATA:
+        DATA[name] = number
+        return "successfully changed"
     else:
-        print("No such contact!")
+        return "No such contact!"
 
 
 @input_error
-def phone(arguments):
-    """Show the phone number for a contact.
-    arguments is a list made of input: input.split(' ')"""
-    print(DATA[arguments[1]])
+def phone(name, *_):
+    """Show the phone number for a contact."""
+
+    return DATA[name]
 
 
 @input_error
 def show_all(*_):
-    """Show all contacts in the data.
-    arguments is a list made of input: input.split(' ')"""
-    print(DATA)
+    """Show all contacts in the data."""
+    return DATA
 
 
 # Set of command functions
-COMMANDS = (hello, add, change, phone, show_all, help)
+_commands = {
+    "hello": hello,
+    "add": add,
+    "change": change,
+    "phone": phone,
+    "show_all": show_all,
+    "help": help,
+}
 
 
 # Main loop
+@input_error
 def main():
     """Main function that runs the program."""
     while True:
@@ -90,10 +101,9 @@ def main():
         if user_input in BREAK_POINTS:
             break
 
-        command = user_input.split(" ")[0]
-        if command in AVAILABLE_COMMANDS:
-            index = AVAILABLE_COMMANDS.index(command)
-            COMMANDS[index](user_input.split(" "))
+        command, *data = user_input.split(" ")
+        if (func := _commands.get(command)) is not None:
+            print(func(*data))
         else:
             print("No such command! Please repeat")
 

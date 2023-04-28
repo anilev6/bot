@@ -104,7 +104,9 @@ def main():
         if (func := _commands.get(command)) is not None:
             print(func(*data))
         else:
-            print("No such command! Please repeat")
+            print(
+                "No such command! Please repeat. To see available list of commands type 'help' "
+            )
 
     print("Good bye!")
 

@@ -27,7 +27,7 @@ def input_error(func):
 def hello(*_):
     """Greet the user."""
 
-    return "How can I help you?"
+    return "How can I help you? Type 'help' to see list of available commands \n "
 
 
 @input_error
@@ -48,12 +48,12 @@ def help(*_):
 
 
 @input_error
-def add(name, phone):
+def add(name, number, *_):
     """Add a new contact to the data."""
     if name in DATA:
         return "Contact already exists!"
     else:
-        DATA[name] = phone
+        DATA[name] = number
         return "successfully added"
 
 
@@ -71,7 +71,7 @@ def change(name, number, *_):
 def phone(name, *_):
     """Show the phone number for a contact."""
 
-    return DATA[name]
+    return f"{name}'s number is {DATA[name]}"
 
 
 @input_error

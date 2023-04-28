@@ -77,6 +77,7 @@ def phone(name, *_):
 @input_error
 def show_all(*_):
     """Show all contacts in the data."""
+
     return DATA
 
 
@@ -91,6 +92,13 @@ _commands = {
 }
 
 
+# command parser
+@input_error
+def command_parser(input):
+    command, *data = input.split(" ")
+    return command, *data
+
+
 # Main loop
 @input_error
 def main():
@@ -101,7 +109,7 @@ def main():
         if user_input in BREAK_POINTS:
             break
 
-        command, *data = user_input.split(" ")
+        command, *data = command_parser(user_input)
         if (func := _commands.get(command)) is not None:
             print(func(*data))
         else:

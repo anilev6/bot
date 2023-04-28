@@ -1,5 +1,5 @@
 # Define break points and available commands
-BREAK_POINTS = ("good bye", "close", "exit")
+BREAK_POINTS = "good bye", "close", "exit"
 
 # Data storage
 DATA = {}
@@ -13,11 +13,11 @@ def input_error(func):
         try:
             return func(*args, **kwargs)
         except KeyError:
-            print("No such contact!")
+            return "No such contact!"
         except ValueError:
-            print("No such phone number!")
+            return "No such phone number!"
         except TypeError:
-            print('Invalid request! To see available list of commands type "help" ')
+            return 'Invalid request! To see available list of commands type "help" '
 
     return inner
 
@@ -26,6 +26,7 @@ def input_error(func):
 @input_error
 def hello(*_):
     """Greet the user."""
+
     return "How can I help you?"
 
 
